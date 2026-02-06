@@ -1,0 +1,78 @@
+# Rose-day-gift<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { background: #fff0f3; font-family: sans-serif; text-align: center; margin: 0; overflow: hidden; }
+        .page { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .active { display: flex; }
+        .grid { display: grid; grid-template-columns: repeat(3, 80px); gap: 10px; margin: 20px; }
+        .cell { width: 80px; height: 80px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn { background: #ff4d6d; color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 1rem; cursor: pointer; }
+        .petal { position: fixed; top: -10%; z-index: 1; pointer-events: none; animation: fall 5s linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="p1" class="page active">
+        <h1>Hi Beautiful... 🌹</h1>
+        <p>I made a small game for you.</p>
+        <button class="btn" onclick="go(2)">Start Game</button>
+    </div>
+
+    <div id="p2" class="page">
+        <h2>Win to see my note!</h2>
+        <div class="grid" id="board">
+            <div class="cell" onclick="tap(0)"></div><div class="cell" onclick="tap(1)"></div><div class="cell" onclick="tap(2)"></div>
+            <div class="cell" onclick="tap(3)"></div><div class="cell" onclick="tap(4)"></div><div class="cell" onclick="tap(5)"></div>
+            <div class="cell" onclick="tap(6)"></div><div class="cell" onclick="tap(7)"></div><div class="cell" onclick="tap(8)"></div>
+        </div>
+        <button id="next" class="btn" style="display:none" onclick="go(3)">Open My Message</button>
+    </div>
+
+    <div id="p3" class="page">
+        <h2 style="color: #c9184a; line-height: 1.5;">
+            "From the moment you entered my life, everything became brighter, just like the beauty of a rose. Happy Rose Day, my soulmate."
+        </h2>
+        <p>❤️ 🌹 ❤️</p>
+    </div>
+
+    <script>
+        let b = ["","","","","","","","",""];
+        function go(n) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('p'+n).classList.add('active');
+            if(n===3) setInterval(petals, 300);
+        }
+        function tap(i) {
+            if(b[i]==="") {
+                b[i]="❤️"; document.querySelectorAll('.cell')[i].innerText="❤️";
+                if(!win()) setTimeout(ai, 400);
+            }
+        }
+        function ai() {
+            let e = b.map((v,i)=>v===""?i:null).filter(v=>v!==null);
+            if(e.length) { b[e[0]]="🌹"; document.querySelectorAll('.cell')[e[0]].innerText="🌹"; win(); }
+        }
+        function win() {
+            const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for(let l of lines) {
+                if(b[l[0]] && b[l[0]]===b[l[1]] && b[l[0]]===b[l[2]]) {
+                    if(b[l[0]]==="❤️") document.getElementById('next').style.display="block";
+                    return true;
+                }
+            }
+            return false;
+        }
+        function petals() {
+            const p = document.createElement('div');
+            p.className = 'petal';
+            p.innerHTML = '🌹';
+            p.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 5000);
+        }
+    </script>
+</body>
+</html>
